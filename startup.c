@@ -1,6 +1,47 @@
+#include <stdint.h>
+
+extern uint32_t _etext;
+extern uint32_t _data_start;
+extern uint32_t _data_end;
+extern uint32_t _bss_start;
+extern uint32_t _bss_end;
+extern uint32_t __stack_top;
+
+void resetHandler(void);
+void defaultHandler(void);
+
 typedef void (*isr_t)(void);
 
+__attribute__((section(".vectors")))
 const isr_t vector_table[] = {
-  Reset_Handler,
-  Default_Handler,
+  (isr_t)&__stack_top,
+  resetHandler,
+  defaultHandler,
 };
+
+void resetHandler(void){
+  uint32_t* src = &_etext;
+  uint32_t* dst = &_data_start;
+  uint32_t* dst_end = &_data_end;
+
+  while(dst < dst_end){
+    *dst = *src;
+    dst++;
+    src++;
+  }
+
+  uint32_t* bss = &_bss_start;
+  uint32_t* bssEnd = &_bss_end;
+
+  while (bss < bssEnd){
+    *bss = 0;
+    bss++;
+  }
+
+}
+
+void defaultHandler(void){
+  while(1){
+
+  }
+}
