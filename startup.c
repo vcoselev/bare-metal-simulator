@@ -14,10 +14,36 @@ typedef void (*isr_t)(void);
 
 __attribute__((section(".vectors")))
 const isr_t vector_table[] = {
-  (isr_t)&__stack_top,
-  resetHandler,
-  defaultHandler,
+    (isr_t)&__stack_top,   // 0: Start SP
+    resetHandler,          // 1: Reset
+    defaultHandler,        // 2: NMI
+    defaultHandler,        // 3: HardFault
+    defaultHandler,        // 4: MemManage
+    defaultHandler,        // 5: BusFault
+    defaultHandler,        // 6: UsageFault
+    0,                     // 7: reserved
+    0,                     // 8: reserved
+    0,                     // 9: reserved
+    0,                     // 10: reserved
+    defaultHandler,        // 11: SVCall
+    defaultHandler,        // 12: Debug Monitor
+    0,                     // 13: reserved
+    defaultHandler,        // 14: PendSV
+    defaultHandler,        // 15: SysTick
+    // IRQs 16..59 (44 interruptions)
+    defaultHandler, defaultHandler, defaultHandler, defaultHandler,
+    defaultHandler, defaultHandler, defaultHandler, defaultHandler,
+    defaultHandler, defaultHandler, defaultHandler, defaultHandler,
+    defaultHandler, defaultHandler, defaultHandler, defaultHandler,
+    defaultHandler, defaultHandler, defaultHandler, defaultHandler,
+    defaultHandler, defaultHandler, defaultHandler, defaultHandler,
+    defaultHandler, defaultHandler, defaultHandler, defaultHandler,
+    defaultHandler, defaultHandler, defaultHandler, defaultHandler,
+    defaultHandler, defaultHandler, defaultHandler, defaultHandler,
+    defaultHandler, defaultHandler, defaultHandler, defaultHandler,
+    defaultHandler, defaultHandler, defaultHandler, defaultHandler
 };
+
 
 void resetHandler(void){
   uint32_t* src = &_etext;
@@ -38,6 +64,7 @@ void resetHandler(void){
     bss++;
   }
 
+  main();
 }
 
 void defaultHandler(void){
