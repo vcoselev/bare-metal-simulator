@@ -44,6 +44,7 @@ const isr_t vector_table[] = {
     defaultHandler, defaultHandler, defaultHandler, defaultHandler
 };
 
+extern int main();
 
 void resetHandler(void){
   uint32_t* src = &_etext;

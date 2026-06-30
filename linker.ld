@@ -1,3 +1,5 @@
+ENTRY(resetHandler)
+
 MEMORY
 {
   FLASH(rw) : ORIGIN = 0x00000000, LENGTH = 256K
@@ -11,8 +13,14 @@ SECTIONS
     *(.text*)
     *(.rodata*)
     . = ALIGN(4);
-    _etext = .;
-  }
+  } > FLASH
+
+  .ARM.exidx : {
+    *(.ARM.exidx*)
+    . = ALIGN(4);
+  } > FLASH
+
+  _etext = .;
 
   .data : AT(_etext) {
     _data_start = .;
