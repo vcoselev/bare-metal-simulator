@@ -9,10 +9,11 @@ extern uint32_t __stack_top;
 
 void resetHandler(void);
 void defaultHandler(void);
+void sysTickHandler(void);
 
 typedef void (*isr_t)(void);
 
-__attribute__((section(".vectors")))
+__attribute__((section(".vectors"), used))
 const isr_t vector_table[] = {
     (isr_t)&__stack_top,   // 0: Start SP
     resetHandler,          // 1: Reset
@@ -29,7 +30,7 @@ const isr_t vector_table[] = {
     defaultHandler,        // 12: Debug Monitor
     0,                     // 13: reserved
     defaultHandler,        // 14: PendSV
-    defaultHandler,        // 15: SysTick
+    sysTickHandler,        // 15: SysTick
     // IRQs 16..59 (44 interruptions)
     defaultHandler, defaultHandler, defaultHandler, defaultHandler,
     defaultHandler, defaultHandler, defaultHandler, defaultHandler,
@@ -66,10 +67,16 @@ void resetHandler(void){
   }
 
   main();
+  while(1);
 }
 
 void defaultHandler(void){
   while(1){
 
   }
+}
+
+volatile uint32_t tick = 0;
+void sysTickHandler(void){
+  tick++;
 }
